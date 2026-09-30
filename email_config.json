@@ -1,0 +1,8 @@
+{
+  "recipient_email": "jgodgart@gmail.com",
+  "provider": "gmail_smtp",
+  "gmail_smtp": {
+    "sender_email": "jgodgart@gmail.com",
+    "app_password": "oqksdepbcmsnqers"
+  }
+}

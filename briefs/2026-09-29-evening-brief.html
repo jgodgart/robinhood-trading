@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontier Evening Report — Tue Sept 29, 2026</title>
+<style>
+  :root {
+    --bg: #faf7f2; --ink: #1a1a1a; --muted: #6b6459; --rule: #d8d2c6;
+    --green: #2e7d32; --amber: #b26a00; --red: #b3261e; --gray: #8a8378;
+    --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1c1a17; --ink: #e8e4dc; --muted: #a09a8e; --rule: #3a362f;
+      --green: #6fbf73; --amber: #e0a34e; --red: #e57373; --gray: #8a8378; --card: #26231f; }
+  }
+  body { background: var(--bg); color: var(--ink); font-family: Georgia, 'Times New Roman', serif;
+    line-height: 1.55; margin: 0; padding: 24px 16px 60px; }
+  .col { max-width: 760px; margin: 0 auto; }
+  h1, h2, h3, .label, th, .chip, .banner-tag { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+  h1 { font-size: 1.35rem; margin: 0 0 2px; }
+  h2 { font-size: 1.02rem; margin: 30px 0 8px; letter-spacing: .02em; }
+  .masthead { border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-bottom: 14px; }
+  .masthead .sub { color: var(--muted); font-size: .88rem; }
+  .banner { border: 3px solid var(--ink); padding: 14px 16px; margin: 16px 0 22px; }
+  .banner-tag { font-size: .72rem; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+  .banner p { margin: 6px 0 0; font-size: 1.08rem; font-weight: bold; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 6px; font-size: .92rem; }
+  th { text-align: left; font-size: .74rem; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); border-bottom: 1px solid var(--rule); padding: 5px 8px 5px 0; }
+  td { border-bottom: 1px solid var(--rule); padding: 6px 8px 6px 0; vertical-align: top; }
+  td.num, th.num { text-align: right; }
+  .chip { display: inline-block; font-size: .7rem; font-weight: 600; letter-spacing: .05em;
+    padding: 2px 8px; border: 1.5px solid; border-radius: 3px; text-transform: uppercase; }
+  .chip.hold { color: var(--green); border-color: var(--green); }
+  .chip.blocked { color: var(--amber); border-color: var(--amber); }
+  .chip.none { color: var(--gray); border-color: var(--gray); }
+  .chip.executed { color: var(--green); border-color: var(--green); background: rgba(46, 125, 50, 0.08); }
+  .card { border-left: 4px solid var(--gray); background: var(--card); padding: 10px 14px; margin: 10px 0; }
+  .card.ok { border-left-color: var(--green); }
+  .card.watch { border-left-color: var(--amber); }
+  .card.broken { border-left-color: var(--red); }
+  .verdict { font-weight: bold; }
+  .explain { color: var(--muted); font-size: .95rem; }
+  .stat-strip { display: flex; flex-wrap: wrap; gap: 14px; font-size: .85rem;
+    border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 8px 0; margin: 10px 0; }
+  .stat-strip b { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; }
+  #skimBtn { font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: .78rem;
+    background: none; border: 1.5px solid var(--ink); color: var(--ink); padding: 4px 12px;
+    border-radius: 3px; cursor: pointer; margin-bottom: 8px; }
+  body.skim .explain { display: none; }
+  .fine { color: var(--muted); font-size: .82rem; }
+</style>
+</head>
+<body>
+<div class="col">
+  <div class="masthead">
+    <h1>Frontier Evening Report</h1>
+    <div class="sub">Tuesday, September 29, 2026 · pass run ~8:00pm ET · Agentic account ••••5530</div>
+  </div>
+  <button id="skimBtn" onclick="document.body.classList.toggle('skim')">Skim mode</button>
+  
+  <div class="banner">
+    <div class="banner-tag">The Recap</div>
+    <p>50/50 allocation in band (47.9% / 52.1%). Zero triggers fired today. AA held to assignment; SOFI and NCLH quiet. Antigravity MCP integration staged.</p>
+  </div>
+
+  <div class="stat-strip">
+    <span><b>Agentic NAV:</b> $52,775.00</span>
+    <span><b>Frontier Sleeve:</b> $25,279.23 (47.9%)</span>
+    <span><b>CSP Sleeve:</b> $27,495.77 (52.1%)</span>
+    <span><b>Reserve:</b> $19,995.77 (72.7%)</span>
+    <span><b>Regime:</b> NORMAL</span>
+  </div>
+
+  <h2>1 · What happened today</h2>
+  <p><span class="verdict">No trades executed today.</span> <span class="explain">All open option positions remained inside trigger bounds during options trading hours. Intraday monitors ran silent as expected.</span></p>
+
+  <h2>2 · Open-position trigger check & wheel campaigns</h2>
+  <table>
+    <tr><th>Campaign</th><th class="num">Credit</th><th class="num">Live Mark</th><th class="num">P/L</th><th>Trigger State</th><th>Action</th></tr>
+    <tr>
+      <td><b>AA</b> $45 put · Oct 16 (Core)</td>
+      <td class="num">$111</td>
+      <td class="num">$3.73</td>
+      <td class="num">−$262</td>
+      <td>3.36× credit. ITM. Oct 15 earnings block autonomous roll.</td>
+      <td><span class="chip hold">HELD TO ASSIGNMENT</span></td>
+    </tr>
+    <tr>
+      <td><b>SOFI</b> $16 put · Oct 16 (Core)</td>
+      <td class="num">$52</td>
+      <td class="num">$0.38</td>
+      <td class="num">+$14</td>
+      <td>OTM. 50% profit target ($0.26) not reached.</td>
+      <td><span class="chip none">HOLD — NO TRIGGER</span></td>
+    </tr>
+    <tr>
+      <td><b>NCLH</b> $14 put · Oct 16 (Core)</td>
+      <td class="num">$48</td>
+      <td class="num">$0.32</td>
+      <td class="num">+$16</td>
+      <td>OTM. 50% profit target ($0.24) not reached.</td>
+      <td><span class="chip none">HOLD — NO TRIGGER</span></td>
+    </tr>
+  </table>
+
+  <h2>3 · Scoreboard & Risk Status</h2>
+  <table>
+    <tr><th>Risk Dimension</th><th>Current State</th><th>Rule Limit</th><th>Status</th></tr>
+    <tr><td>Allocation Band</td><td>47.9% Frontier / 52.1% CSP</td><td>45%–55% normal (40%–60% hard)</td><td><span class="chip hold">IN BAND</span></td></tr>
+    <tr><td>Cash Reserve Floor</td><td>72.72% ($19,995.77 unencumbered)</td><td>≥ 20.00% hard floor</td><td><span class="chip hold">COMPLIANT</span></td></tr>
+    <tr><td>Collateral Utilization</td><td>27.28% ($7,500.00 pledged)</td><td>≤ 75.00% (NORMAL regime cap)</td><td><span class="chip hold">COMPLIANT</span></td></tr>
+    <tr><td>Monthly 6% Breaker</td><td>−$85.00 (−0.31% of start NAV)</td><td>≤ −6.00% ($1,650 loss)</td><td><span class="chip hold">INACTIVE</span></td></tr>
+    <tr><td>Rolling-30d 15% Breaker</td><td>−0.95% from trailing 30d peak</td><td>≤ −15.00% drawdown</td><td><span class="chip hold">INACTIVE</span></td></tr>
+    <tr><td>Active Loss Cooldown</td><td>CELH (31 days)</td><td>Expires Oct 11, 2026</td><td><span class="chip blocked">ENFORCED</span></td></tr>
+  </table>
+
+  <h2>4 · Frontier Sleeve Summary</h2>
+  <div class="card ok">
+    <span class="verdict">19 Core Holdings HEALTHY.</span>
+    <span class="explain">Anchors (ASML, RKLB, CEG) and growth names (IONQ, RXRX, TEM, ONDS, ASTS, MP, INOD, MU) have no broken theses or 1.5× trim triggers active.</span>
+  </div>
+  <div class="card watch">
+    <span class="verdict">BETA on WATCH.</span>
+    <span class="explain">Manual Jake buy (~Sept 25) awaiting formal §8 diligence pass. Position size held static.</span>
+  </div>
+
+  <h2>5 · Setting up tomorrow's pre-market report</h2>
+  <ol>
+    <li><b>STEP 0 Broker Reconcile:</b> Query live balances, confirm Gold cash sweep interest accrual ahead of month-end.</li>
+    <li><b>AA Assignment Horizon:</b> AA Oct 16 $45 put is 17 DTE tomorrow. Assignment cash requirement ($4,500) is pre-funded; pending cash-adjusted basis is $43.89/sh.</li>
+    <li><b>CSP Scanner:</b> Screen for 35–45 DTE November cycle opportunities; respect weekly pacing ceiling and 20% combined underlying cap.</li>
+    <li><b>Cash Transfer Confirmation:</b> Verify origin and sleeve destination of $2,740.43 (Sept 25).</li>
+  </ol>
+
+  <p class="fine">Verification Note: Account actuals derived from Sept 28 evening snapshot and replicated into local state files. Limit orders only. Zero market orders authorized.</p>
+</div>
+</body>
+</html>

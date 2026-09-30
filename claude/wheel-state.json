@@ -1,0 +1,115 @@
+{
+  "last_updated": "2026-09-28T20:00:00Z",
+  "summary": {
+    "open_campaigns_count": 3,
+    "lifetime_realized_option_pnl": -85.00,
+    "locked_open_premium": 211.00,
+    "collateral_locked": 7500.00
+  },
+  "campaigns": [
+    {
+      "campaign_id": "WHEEL-AA-20260902-001",
+      "symbol": "AA",
+      "bucket": "Core",
+      "status": "OPEN",
+      "thesis_state": "HEALTHY",
+      "roll_count": 0,
+      "put_contracts": [
+        {
+          "strike": 45.0,
+          "expiration": "2026-10-16",
+          "credit_per_share": 1.11,
+          "contracts": 1,
+          "opened_at": "2026-09-02T14:15:00Z"
+        }
+      ],
+      "open_option_credit": 111.00,
+      "collateral_tied_up": 4500.00,
+      "pending_assignment_basis_per_share": 43.89,
+      "cash_adjusted_wheel_basis_per_share": 43.89,
+      "last_live_quote": {
+        "mark": 3.73,
+        "spot": 41.97,
+        "delta": -0.68,
+        "dte": 18,
+        "unrealized_pnl": -262.00
+      },
+      "triggers": {
+        "profit_50pct_close_at_or_below": 0.55,
+        "loss_3x_credit_close_at_or_above": null,
+        "dte_21_checkpoint": "2026-09-25",
+        "roll_blocked_reason": "Oct 15 earnings before Oct 16 expiry; roll destination crossing earnings disallowed",
+        "action_decision": "HELD_TO_ASSIGNMENT"
+      }
+    },
+    {
+      "campaign_id": "WHEEL-SOFI-20260904-001",
+      "symbol": "SOFI",
+      "bucket": "Core",
+      "status": "OPEN",
+      "thesis_state": "HEALTHY",
+      "roll_count": 0,
+      "put_contracts": [
+        {
+          "strike": 16.0,
+          "expiration": "2026-10-16",
+          "credit_per_share": 0.52,
+          "contracts": 1,
+          "opened_at": "2026-09-04T15:30:00Z"
+        }
+      ],
+      "open_option_credit": 52.00,
+      "collateral_tied_up": 1600.00,
+      "pending_assignment_basis_per_share": 15.48,
+      "cash_adjusted_wheel_basis_per_share": 15.48,
+      "last_live_quote": {
+        "mark": 0.38,
+        "spot": 17.15,
+        "delta": -0.28,
+        "dte": 18,
+        "unrealized_pnl": 14.00
+      },
+      "triggers": {
+        "profit_50pct_close_at_or_below": 0.26,
+        "loss_3x_credit_close_at_or_above": null,
+        "dte_21_checkpoint": "2026-09-25",
+        "action_decision": "HOLD_NO_TRIGGER"
+      }
+    },
+    {
+      "campaign_id": "WHEEL-NCLH-20260905-001",
+      "symbol": "NCLH",
+      "bucket": "Core",
+      "status": "OPEN",
+      "thesis_state": "HEALTHY",
+      "roll_count": 0,
+      "put_contracts": [
+        {
+          "strike": 14.0,
+          "expiration": "2026-10-16",
+          "credit_per_share": 0.48,
+          "contracts": 1,
+          "opened_at": "2026-09-05T14:45:00Z"
+        }
+      ],
+      "open_option_credit": 48.00,
+      "collateral_tied_up": 1400.00,
+      "pending_assignment_basis_per_share": 13.52,
+      "cash_adjusted_wheel_basis_per_share": 13.52,
+      "last_live_quote": {
+        "mark": 0.32,
+        "spot": 15.20,
+        "delta": -0.25,
+        "dte": 18,
+        "unrealized_pnl": 16.00
+      },
+      "triggers": {
+        "profit_50pct_close_at_or_below": 0.24,
+        "loss_3x_credit_close_at_or_above": null,
+        "dte_21_checkpoint": "2026-09-25",
+        "action_decision": "HOLD_NO_TRIGGER"
+      }
+    }
+  ],
+  "staged_candidates": []
+}
