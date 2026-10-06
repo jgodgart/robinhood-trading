@@ -1,3 +1,6 @@
+import logging
+logging.getLogger("google_genai.models").setLevel(logging.ERROR)
+
 import os
 import json
 import sys
