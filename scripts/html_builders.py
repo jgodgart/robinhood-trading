@@ -295,13 +295,23 @@ def build_agentic_brief(state_file, sentiment_data, tactical_html):
         shs_str = f"{shs:.2f}" if shs >= 10 else f"{shs:.4f}"
         chart_file = "onds_stock_pl_chart.png" if sym == "ONDS" else f"{sym.lower()}_pl_chart.png"
         
-        sent_info = sentiment_data.get(sym, {})
-        analysis = sent_info.get("analysis", f"{name} is an active frontier equity position trading at ${price:.2f}.")
-        target_mean = sent_info.get("target_mean", 0)
-        upside = sent_info.get("upside_pct", 0)
-
-        meaning = STOCK_DETAILS.get(sym, {}).get("meaning", f"{name} is part of your long-term portfolio.")
-        border_accent = "#137333" if pnl >= 0 else "#1A73E8"
+        sent_info = sentiment_data.get(sym) or sentiment_data.get(sym + ":option:agentic") or {}
+        rating = sent_info.get("rating", "UNRATED")
+        if rating is None: rating = "UNRATED"
+        rating_color = sent_info.get("rating_color", "#5F6368")
+        overlay = sent_info.get("overlay", {})
+        action = overlay.get("action", "HOLD")
+        action_color = overlay.get("action_color", "#5F6368")
+        rule = overlay.get("rule", "")
+        
+        llm = sent_info.get("llm") or {}
+        analysis = llm.get("whats_going_on") or sent_info.get("analysis", f"{name} is an active frontier equity position trading at ${price:.2f}.")
+        meaning = llm.get("what_this_means") or STOCK_DETAILS.get(sym, {}).get("meaning", f"{name} is part of your long-term portfolio.")
+        
+        q = sent_info.get("quant", {})
+        target_mean = q.get("target_mean") or sent_info.get("target_mean") or 0
+        upside = q.get("upside_pct") or sent_info.get("upside_pct") or 0
+        border_accent = "#137333" if pnl >= 0 else "#1A73E8" 
 
         html += f"""
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFFFF; border: 1px solid #DADCE0; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;">
@@ -504,13 +514,23 @@ def build_individual_brief(state_file, sentiment_data):
         shs_str = f"{shs:.2f}" if shs >= 10 else f"{shs:.4f}"
         chart_file = "onds_stock_pl_chart.png" if sym == "ONDS" else f"{sym.lower()}_pl_chart.png"
         
-        sent_info = sentiment_data.get(sym, {})
-        analysis = sent_info.get("analysis", f"{name} is an active equity position trading at ${price:.2f}.")
-        target_mean = sent_info.get("target_mean", 0)
-        upside = sent_info.get("upside_pct", 0)
-
-        meaning = STOCK_DETAILS.get(sym, {}).get("meaning", f"{name} is an active position in your portfolio.")
-        border_accent = "#137333" if pnl >= 0 else "#1A73E8"
+        sent_info = sentiment_data.get(sym) or sentiment_data.get(sym + ":option:self_managed") or {}
+        rating = sent_info.get("rating", "UNRATED")
+        if rating is None: rating = "UNRATED"
+        rating_color = sent_info.get("rating_color", "#5F6368")
+        overlay = sent_info.get("overlay", {})
+        action = overlay.get("action", "HOLD")
+        action_color = overlay.get("action_color", "#5F6368")
+        rule = overlay.get("rule", "")
+        
+        llm = sent_info.get("llm") or {}
+        analysis = llm.get("whats_going_on") or sent_info.get("analysis", f"{name} is an active equity position trading at ${price:.2f}.")
+        meaning = llm.get("what_this_means") or STOCK_DETAILS.get(sym, {}).get("meaning", f"{name} is an active position in your portfolio.")
+        
+        q = sent_info.get("quant", {})
+        target_mean = q.get("target_mean") or sent_info.get("target_mean") or 0
+        upside = q.get("upside_pct") or sent_info.get("upside_pct") or 0
+        border_accent = "#137333" if pnl >= 0 else "#1A73E8" 
 
         html += f"""
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFFFF; border: 1px solid #DADCE0; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;">
