@@ -20,6 +20,8 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 
 import yfinance as yf
+import logging
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from agents.config import GEMINI_MODEL

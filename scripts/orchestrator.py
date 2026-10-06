@@ -3,6 +3,8 @@ logging.getLogger("google_genai.models").setLevel(logging.ERROR)
 
 import os
 import json
+import logging
+logging.getLogger('yfinance').setLevel(logging.CRITICAL)
 import sys
 import subprocess
 from datetime import datetime
