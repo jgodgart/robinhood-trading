@@ -295,7 +295,7 @@ def generate_all():
     except:
         live_state = {"agentic": {"stocks": [], "options": []}, "self_managed": {"stocks": [], "options": []}}
 
-    def get_limits(account_key, asset_key, pad=500):
+    def get_limits(account_key, asset_key):
         items = live_state.get(account_key, {}).get(asset_key, [])
         if not items:
             return (-2000, 8000), [-2000, 0, 2000, 4000, 6000, 8000]
@@ -305,23 +305,37 @@ def generate_all():
         max_pnl = max(pnls + [0])
         min_pnl = min(pnls + [0])
         
-        upper = math.ceil(max_pnl / pad) * pad
-        if upper == max_pnl: upper += pad
-        lower = math.floor(min_pnl / pad) * pad
-        if lower == min_pnl: lower -= pad
+        span = max_pnl - min_pnl if max_pnl > min_pnl else 100
+        raw_step = span / 5.0
+        magnitude = 10 ** math.floor(math.log10(raw_step))
+        rel_step = raw_step / magnitude
+        if rel_step <= 1.2:
+            tick_step = 1 * magnitude
+        elif rel_step <= 2.5:
+            tick_step = 2 * magnitude
+        elif rel_step <= 6:
+            tick_step = 5 * magnitude
+        else:
+            tick_step = 10 * magnitude
+            
+        lower = math.floor(min_pnl / tick_step) * tick_step
+        upper = math.ceil(max_pnl / tick_step) * tick_step
+        
+        if upper == max_pnl: upper += tick_step
+        if lower == min_pnl: lower -= tick_step
         
         ticks = []
         val = lower
         while val <= upper + 0.1:
             ticks.append(val)
-            val += pad
+            val += tick_step
             
         return (lower, upper), ticks
 
-    agentic_eq_lim, agentic_eq_ticks = get_limits("agentic", "stocks", 500)
-    agentic_opt_lim, agentic_opt_ticks = get_limits("agentic", "options", 100)
-    self_managed_eq_lim, self_managed_eq_ticks = get_limits("self_managed", "stocks", 500)
-    self_managed_opt_lim, self_managed_opt_ticks = get_limits("self_managed", "options", 100)
+    agentic_eq_lim, agentic_eq_ticks = get_limits("agentic", "stocks")
+    agentic_opt_lim, agentic_opt_ticks = get_limits("agentic", "options")
+    self_managed_eq_lim, self_managed_eq_ticks = get_limits("self_managed", "stocks")
+    self_managed_opt_lim, self_managed_opt_ticks = get_limits("self_managed", "options")
 
     # Standard Month-over-Month 6-Month Timeline
     mom_labels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
