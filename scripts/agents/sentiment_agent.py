@@ -104,7 +104,7 @@ def _build_prompt(h, q):
 You are the equity research analyst for the Frontier Agentic Trading System. Today is {date.today().isoformat()}.
 Use Google Search to find the LATEST concrete developments (last ~30 days, with dates and numbers) for
 {q['name']} ({h['ticker']}): earnings/guidance, product or contract news, analyst rating/target changes,
-management commentary, insider selling, competitive or regulatory threats, and macro/sector drivers.
+management commentary, and macro/sector drivers. Also, gauge the current retail/social sentiment (e.g. Reddit, Stocktwits, SeekingAlpha) and institutional sentiment (bullish vs bearish).
 
 OUR THESIS for owning it:
 "{h.get('thesis', 'Long-term frontier technology holding.')}"
@@ -129,7 +129,7 @@ Return ONLY a JSON object (no markdown fences) with exactly these keys:
   "supports_thesis": ["2-4 specific facts that SUPPORT our thesis"],
   "refutes_thesis": ["2-4 specific facts/risks that REFUTE or threaten our thesis (valuation counts)"],
   "thesis_status": "INTACT" | "WEAKENING" | "BROKEN",
-  "news_score": <number from -2.0 (very negative) to 2.0 (very positive) for news flow vs our thesis>,
+  "news_score": <number from -2.0 (very bearish) to 2.0 (very bullish) representing combined analyst, news, and social sentiment>,
   "how_to_act": "1-2 sentences: concrete action for this position and the level/event that would change it",
   "what_this_means": "1-2 simple sentences for Jake explaining the bottom line"
 }}
