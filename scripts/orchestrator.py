@@ -24,7 +24,10 @@ def main(dry_run=False):
     print("STEP 0: Downloading live actuals from Google Drive...")
     
     # Run the secure Google Drive downloader
-    subprocess.run([sys.executable, os.path.join(SCRIPTS_DIR, "download_drive_state.py")], check=True)
+    try:
+        subprocess.run([sys.executable, os.path.join(SCRIPTS_DIR, "download_drive_state.py")], check=True)
+    except Exception as e:
+        print("Skipping download due to error:", e)
     
     if not os.path.exists(STATE_FILE):
         print(f"❌ Error: {STATE_FILE} not found after download attempt.")
@@ -36,20 +39,50 @@ def main(dry_run=False):
     with open(STATE_FILE, "r") as f:
         state = json.load(f)
         
-    agentic_stocks = [s['ticker'] for s in state.get('agentic', {}).get('stocks', [])]
-    individual_stocks = [s['ticker'] for s in state.get('individual', {}).get('stocks', [])]
-    all_tickers = list(set(agentic_stocks + individual_stocks))
-    
-    # Trim for faster testing during development if needed
-    # all_tickers = all_tickers[:2]
-    
     print("STEP 2: Spawning AI Agents...")
     
     macro_agent = MacroAgent()
     macro_html = macro_agent.run()
     
+    holdings_to_analyze = []
+    
+    # helper to format position line
+    def fmt_pos(h):
+        return f"{h.get('shares',0):.2f} shares at ${h.get('average_cost',0):.2f} (PNL: {h.get('pnl_pct',0):+.1f}%)"
+    def fmt_opt(o):
+        return f"{o.get('quantity',0)} contracts at ${o.get('avg_cost',0):.2f} (PNL: {o.get('total_pnl_pct',0):+.1f}%)"
+    
+    for s in state.get('agentic', {}).get('stocks', []):
+        holdings_to_analyze.append({
+            "ticker": s["ticker"], "account": "agentic", "kind": "stock",
+            "shares": s.get("shares", 0), "pnl_pct": s.get("pnl_pct", 0), "pct_portfolio": s.get("pct_portfolio", 0),
+            "position_line": fmt_pos(s)
+        })
+    for o in state.get('agentic', {}).get('options', []):
+        holdings_to_analyze.append({
+            "ticker": o["underlying"], "account": "agentic", "kind": "option", "option_side": "short" if o.get("quantity", 1) < 0 else "long",
+            "shares": o.get("quantity", 0), "pnl_pct": o.get("total_pnl_pct", 0), "pct_portfolio": 0,
+            "position_line": fmt_opt(o)
+        })
+        
+    for s in state.get('individual', state.get('self_managed', {})).get('stocks', []):
+        holdings_to_analyze.append({
+            "ticker": s["ticker"], "account": "self_managed", "kind": "stock",
+            "shares": s.get("shares", 0), "pnl_pct": s.get("pnl_pct", 0), "pct_portfolio": s.get("pct_portfolio", 0),
+            "position_line": fmt_pos(s)
+        })
+    for o in state.get('individual', state.get('self_managed', {})).get('options', []):
+        holdings_to_analyze.append({
+            "ticker": o["underlying"], "account": "self_managed", "kind": "option", "option_side": "short" if o.get("quantity", 1) < 0 else "long",
+            "shares": o.get("quantity", 0), "pnl_pct": o.get("total_pnl_pct", 0), "pct_portfolio": 0,
+            "position_line": fmt_opt(o)
+        })
+        
+    # Trim for faster testing during development if needed
+    # holdings_to_analyze = holdings_to_analyze[:2]
+    
     sentiment_agent = SentimentAgent()
-    sentiment_data = sentiment_agent.run(all_tickers)
+    sentiment_data = sentiment_agent.run(holdings_to_analyze)
     
     pm_agent = PortfolioManagerAgent(STATE_FILE, AGENTS_MD)
     tactical_html = pm_agent.run(sentiment_data)

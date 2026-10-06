@@ -6,6 +6,7 @@ Features dynamic two-tone zero-crossing: red below $0, green above $0.
 """
 
 import os
+import math
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -286,6 +287,42 @@ def create_comparative_macro_chart(dates, series_dict, output_path):
     print(f"✅ Generated comparative macro chart: {output_path}")
 
 def generate_all():
+    import json
+    state_file = os.path.join(ASSETS_DIR, "..", "..", "claude", "robinhood-live-state.json")
+    try:
+        with open(state_file, "r") as f:
+            live_state = json.load(f)
+    except:
+        live_state = {"agentic": {"stocks": [], "options": []}, "self_managed": {"stocks": [], "options": []}}
+
+    def get_limits(account_key, asset_key, pad=500):
+        items = live_state.get(account_key, {}).get(asset_key, [])
+        if not items:
+            return (-2000, 8000), [-2000, 0, 2000, 4000, 6000, 8000]
+        pnls = [item.get("pnl", item.get("total_pnl", 0)) for item in items]
+        if not pnls:
+            return (-2000, 8000), [-2000, 0, 2000, 4000, 6000, 8000]
+        max_pnl = max(pnls + [0])
+        min_pnl = min(pnls + [0])
+        
+        upper = math.ceil(max_pnl / pad) * pad
+        if upper == max_pnl: upper += pad
+        lower = math.floor(min_pnl / pad) * pad
+        if lower == min_pnl: lower -= pad
+        
+        ticks = []
+        val = lower
+        while val <= upper + 0.1:
+            ticks.append(val)
+            val += pad
+            
+        return (lower, upper), ticks
+
+    agentic_eq_lim, agentic_eq_ticks = get_limits("agentic", "stocks", 500)
+    agentic_opt_lim, agentic_opt_ticks = get_limits("agentic", "options", 100)
+    self_managed_eq_lim, self_managed_eq_ticks = get_limits("self_managed", "stocks", 500)
+    self_managed_opt_lim, self_managed_opt_ticks = get_limits("self_managed", "options", 100)
+
     # Standard Month-over-Month 6-Month Timeline
     mom_labels = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
 
@@ -430,7 +467,7 @@ def generate_all():
         [3900, 4600, 5400, 4900, 6100, 7068],
         os.path.join(ASSETS_DIR, "crwd_pl_chart.png"),
         target_pl=None, current_label="+$7,068 (+202%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=self_managed_eq_lim, y_ticks=self_managed_eq_ticks
     )
 
     # GLD: Cost basis $286.88 -> $383.89 (+$2,328 gain)
@@ -439,7 +476,7 @@ def generate_all():
         [850, 1180, 1420, 1710, 1990, 2328],
         os.path.join(ASSETS_DIR, "gld_pl_chart.png"),
         target_pl=None, current_label="+$2,328 (+34%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=self_managed_eq_lim, y_ticks=self_managed_eq_ticks
     )
 
     # CGNX: Cost basis $36.60 -> $59.05 (+$1,798 gain)
@@ -448,7 +485,7 @@ def generate_all():
         [480, 750, 980, 1210, 1490, 1798],
         os.path.join(ASSETS_DIR, "cgnx_pl_chart.png"),
         target_pl=None, current_label="+$1,798 (+61%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=self_managed_eq_lim, y_ticks=self_managed_eq_ticks
     )
 
     # DFTX: Micro biotech holding (-$15 to +$10, zero crossing)
@@ -457,7 +494,7 @@ def generate_all():
         [-15, -8, 2, 4, 7, 10],
         os.path.join(ASSETS_DIR, "dftx_pl_chart.png"),
         target_pl=None, current_label="+$10.00 (+2.7%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=self_managed_eq_lim, y_ticks=self_managed_eq_ticks
     )
 
     # --- FRONTIER TECH EQUITIES (ALL ON THE EXACT SAME SCALE!) ---
@@ -467,7 +504,7 @@ def generate_all():
         [110, 180, 230, 290, 340, 378],
         os.path.join(ASSETS_DIR, "asml_pl_chart.png"),
         target_pl=None, current_label="+$378 (+14.2%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # IONQ: Liquid Quantum Computing Leader (+42.2% return)
@@ -476,7 +513,7 @@ def generate_all():
         [150, 280, 390, 480, 580, 675],
         os.path.join(ASSETS_DIR, "ionq_pl_chart.png"),
         target_pl=None, current_label="+$675 (+42.2%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # RKLB: Space Launch & Satellites (+28.6% return)
@@ -485,7 +522,7 @@ def generate_all():
         [80, 150, 230, 310, 390, 450],
         os.path.join(ASSETS_DIR, "rklb_pl_chart.png"),
         target_pl=None, current_label="+$450 (+28.6%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # CEG: Clean Energy / Nuclear Baseload (+38.5% return)
@@ -494,7 +531,7 @@ def generate_all():
         [120, 210, 300, 390, 460, 527],
         os.path.join(ASSETS_DIR, "ceg_pl_chart.png"),
         target_pl=None, current_label="+$527 (+38.5%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # RXRX: AI Drug Discovery (+18.4% return)
@@ -503,7 +540,7 @@ def generate_all():
         [40, 75, 110, 150, 195, 235],
         os.path.join(ASSETS_DIR, "rxrx_pl_chart.png"),
         target_pl=None, current_label="+$235 (+18.4%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # TEM: AI Precision Oncology (+17.8% return)
@@ -512,7 +549,7 @@ def generate_all():
         [30, 60, 95, 130, 170, 210],
         os.path.join(ASSETS_DIR, "tem_pl_chart.png"),
         target_pl=None, current_label="+$210 (+17.8%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # ASTS: Direct-to-Cell Space Constellation (+34.1% return, crossed zero)
@@ -521,7 +558,7 @@ def generate_all():
         [-50, 20, 90, 160, 220, 290],
         os.path.join(ASSETS_DIR, "asts_pl_chart.png"),
         target_pl=None, current_label="+$290 (+34.1%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # ONDS: Drone Defense Common Stock (-12.8% loss, red below zero)
@@ -530,7 +567,7 @@ def generate_all():
         [10, -30, -70, -110, -150, -185],
         os.path.join(ASSETS_DIR, "onds_stock_pl_chart.png"),
         target_pl=None, current_label="−$185.00 (−12.8%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # QBTS: Quantum Annealing Tail (crossed zero to +$323 gain)
@@ -539,7 +576,7 @@ def generate_all():
         [-100, -40, 20, 90, 180, 323],
         os.path.join(ASSETS_DIR, "qbts_pl_chart.png"),
         target_pl=None, current_label="+$323.00 (+64.7%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # MU: Memory HBM Leader (+$267 gain)
@@ -548,7 +585,7 @@ def generate_all():
         [50, 90, 140, 180, 220, 267],
         os.path.join(ASSETS_DIR, "mu_pl_chart.png"),
         target_pl=None, current_label="+$267.24 (+21.0%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # ROBO: Global Robotics ETF (-$72 loss)
@@ -557,7 +594,7 @@ def generate_all():
         [20, 10, -15, -35, -55, -72],
         os.path.join(ASSETS_DIR, "robo_pl_chart.png"),
         target_pl=None, current_label="−$72.46 (−4.7%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # ARKG: Genomics Revolution ETF (+$233 gain)
@@ -566,7 +603,7 @@ def generate_all():
         [30, 70, 110, 150, 190, 233],
         os.path.join(ASSETS_DIR, "arkg_pl_chart.png"),
         target_pl=None, current_label="+$233.35 (+21.2%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # PHO: Water Resources ETF (-$67 loss)
@@ -575,7 +612,7 @@ def generate_all():
         [10, 5, -10, -25, -45, -67],
         os.path.join(ASSETS_DIR, "pho_pl_chart.png"),
         target_pl=None, current_label="−$67.74 (−6.8%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # INOD: AI Data Infrastructure (+$53 gain)
@@ -584,7 +621,7 @@ def generate_all():
         [-20, -5, 15, 25, 40, 53],
         os.path.join(ASSETS_DIR, "inod_pl_chart.png"),
         target_pl=None, current_label="+$52.98 (+7.1%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # MP: Domestic Rare Earths (-$148 loss)
@@ -593,7 +630,7 @@ def generate_all():
         [10, -20, -50, -80, -115, -148],
         os.path.join(ASSETS_DIR, "mp_pl_chart.png"),
         target_pl=None, current_label="−$148.37 (−16.5%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # BETA: Electric Aviation (-$62 loss)
@@ -602,7 +639,7 @@ def generate_all():
         [0, -10, -20, -35, -50, -62],
         os.path.join(ASSETS_DIR, "beta_pl_chart.png"),
         target_pl=None, current_label="−$62.03 (−8.3%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # RGTI: Quantum Computing (-$98 loss)
@@ -611,7 +648,7 @@ def generate_all():
         [-10, -25, -40, -60, -80, -98],
         os.path.join(ASSETS_DIR, "rgti_pl_chart.png"),
         target_pl=None, current_label="−$97.83 (−12.6%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # AUR: Autonomous Trucking (-$190 loss)
@@ -620,7 +657,7 @@ def generate_all():
         [-20, -50, -85, -120, -155, -190],
         os.path.join(ASSETS_DIR, "aur_pl_chart.png"),
         target_pl=None, current_label="−$190.52 (−23.1%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # ARKX: Space Exploration ETF (-$52 loss)
@@ -629,7 +666,7 @@ def generate_all():
         [10, 0, -15, -28, -40, -52],
         os.path.join(ASSETS_DIR, "arkx_pl_chart.png"),
         target_pl=None, current_label="−$52.22 (−7.7%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # JOBY: Commercial eVTOL (-$282 loss)
@@ -638,7 +675,7 @@ def generate_all():
         [-40, -90, -140, -190, -235, -282],
         os.path.join(ASSETS_DIR, "joby_pl_chart.png"),
         target_pl=None, current_label="−$282.12 (−31.3%)",
-        y_limits=all_equity_ylim, y_ticks=all_equity_yticks
+        y_limits=agentic_eq_lim, y_ticks=agentic_eq_ticks
     )
 
     # -------------------------------------------------------------
@@ -655,7 +692,7 @@ def generate_all():
         [-20, -10, 5, 15, 25, 40],
         os.path.join(ASSETS_DIR, "rpd_pl_chart.png"),
         target_pl=None, current_label="+$40.00 (+21.1%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=self_managed_opt_lim, y_ticks=self_managed_opt_ticks
     )
 
     # HTZ $2.5 Call (All negative/decayed: 0 in Apr, -$40, -$90, -$150, -$210, -$240 in Sep)
@@ -664,7 +701,7 @@ def generate_all():
         [0, -40, -90, -150, -210, -240],
         os.path.join(ASSETS_DIR, "htz_pl_chart.png"),
         target_pl=None, current_label="−$240.00 (−88.9%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=self_managed_opt_lim, y_ticks=self_managed_opt_ticks
     )
 
     # ONDS $9 Call (Fluctuated around zero: 0, -10, +15, +5, -18, -33 in Sep)
@@ -673,7 +710,7 @@ def generate_all():
         [0, -10, 15, 5, -18, -33],
         os.path.join(ASSETS_DIR, "onds_pl_chart.png"),
         target_pl=None, current_label="−$33.00 (−20.4%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=self_managed_opt_lim, y_ticks=self_managed_opt_ticks
     )
 
     # --- AGENTIC / FRONTIER OPTIONS ---
@@ -683,14 +720,14 @@ def generate_all():
         [0, 2, 5, 8, 11, 14],
         os.path.join(ASSETS_DIR, "sofi_pl_chart.png"),
         target_pl=26, current_label="+$14.00 (+27%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=agentic_opt_lim, y_ticks=agentic_opt_ticks
     )
     create_holding_pl_chart(
         mom_labels,
         [0, 2, 5, 8, 11, 14],
         os.path.join(ASSETS_DIR, "sofi_csp_chart.png"),
         target_pl=26, current_label="+$14.00 (+27%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=agentic_opt_lim, y_ticks=agentic_opt_ticks
     )
 
     # NCLH $14 Put: Positive theta decay, target is 50% profit (+24 target)
@@ -699,14 +736,14 @@ def generate_all():
         [0, 3, 6, 9, 13, 16],
         os.path.join(ASSETS_DIR, "nclh_pl_chart.png"),
         target_pl=24, current_label="+$16.00 (+33%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=agentic_opt_lim, y_ticks=agentic_opt_ticks
     )
     create_holding_pl_chart(
         mom_labels,
         [0, 3, 6, 9, 13, 16],
         os.path.join(ASSETS_DIR, "nclh_csp_chart.png"),
         target_pl=24, current_label="+$16.00 (+33%)",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=agentic_opt_lim, y_ticks=agentic_opt_ticks
     )
 
     # AA $45 Put: Started positive (+20 in May, +10 in Jun), dropped below zero in Jul (-60), now -$262
@@ -715,14 +752,14 @@ def generate_all():
         [0, 20, 10, -60, -170, -262],
         os.path.join(ASSETS_DIR, "aa_pl_chart.png"),
         target_pl=None, current_label="−$262.00",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=agentic_opt_lim, y_ticks=agentic_opt_ticks
     )
     create_holding_pl_chart(
         mom_labels,
         [0, 20, 10, -60, -170, -262],
         os.path.join(ASSETS_DIR, "aa_csp_chart.png"),
         target_pl=None, current_label="−$262.00",
-        y_limits=opt_ylim, y_ticks=opt_yticks
+        y_limits=agentic_opt_lim, y_ticks=agentic_opt_ticks
     )
 
 if __name__ == "__main__":

@@ -318,6 +318,11 @@ def build_agentic_brief(state_file, sentiment_data, tactical_html):
                         <span style="background-color: {pnl_badge_bg}; color: {pnl_badge_fg}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; white-space: nowrap;">
                           {pnl_icon} {pnl_sign}${abs(pnl):,.0f} ({pnl_sign}{abs(pnl_pct):.1f}%)
                         </span>
+                        <div style="margin-top: 4px; text-align: right;">
+                          <span style="display: inline-block; background-color: {rating_color}15; color: {rating_color}; border: 1px solid {rating_color}40; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">
+                            {rating}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -329,6 +334,9 @@ def build_agentic_brief(state_file, sentiment_data, tactical_html):
                   </div>
                   <div style="background-color: #F8F9FA; border-left: 3px solid {border_accent}; border-radius: 4px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: #3C4043; line-height: 1.45;">
                     <b>💡 What this means:</b> {meaning}
+                    <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #E8EAED;">
+                        <span style="color: {action_color}; font-weight: 800;">ACTION: {action}</span> — <span style="color: #5F6368;">{rule}</span>
+                    </div>
                   </div>
                 </td>
               </tr>
@@ -519,6 +527,11 @@ def build_individual_brief(state_file, sentiment_data):
                         <span style="background-color: {pnl_badge_bg}; color: {pnl_badge_fg}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; white-space: nowrap;">
                           {pnl_icon} {pnl_sign}${abs(pnl):,.0f} ({pnl_sign}{abs(pnl_pct):.1f}%)
                         </span>
+                        <div style="margin-top: 4px; text-align: right;">
+                          <span style="display: inline-block; background-color: {rating_color}15; color: {rating_color}; border: 1px solid {rating_color}40; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">
+                            {rating}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -530,6 +543,9 @@ def build_individual_brief(state_file, sentiment_data):
                   </div>
                   <div style="background-color: #F8F9FA; border-left: 3px solid {border_accent}; border-radius: 4px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: #3C4043; line-height: 1.45;">
                     <b>💡 What this means:</b> {meaning}
+                    <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #E8EAED;">
+                        <span style="color: {action_color}; font-weight: 800;">ACTION: {action}</span> — <span style="color: #5F6368;">{rule}</span>
+                    </div>
                   </div>
                 </td>
               </tr>
