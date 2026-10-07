@@ -1,6 +1,7 @@
 import os
 from google import genai
 from google.genai import types
+from agents.config import GEMINI_MODEL
 
 class MacroAgent:
     def __init__(self):
@@ -21,11 +22,24 @@ class MacroAgent:
         3. Political/Geopolitical Moves affecting the market
         4. Direct implications for Tech and Frontier Equity markets (Semiconductors, Quantum, AI, Space).
         
-        Keep it professional, analytical, and highly actionable. Return the result in HTML format suitable for embedding inside an email body (e.g. using basic <div>, <b>, <ul> tags). Do NOT wrap the response in ```html markdown blocks.
-        """
+        Then, crucially, you MUST go through EACH of the 11 core market sectors, provide information about what's happening in that sector today, and list the top stocks to consider for investment based on the current news. The 11 sectors are:
+        - Information Technology: software, hardware, semiconductors, IT services (e.g., Apple, Microsoft, Nvidia).
+        - Financials: banks, insurance firms, asset managers, credit cards (e.g., Berkshire Hathaway, JPMorgan Chase).
+        - Healthcare: drug makers, biotech, medical devices, health insurers (e.g., Eli Lilly, UnitedHealth, Johnson & Johnson).
+        - Consumer Discretionary: non-essential goods, cars, luxury items, entertainment (e.g., Amazon, Tesla, McDonald's).
+        - Communication Services: telecom, media, search engines, social platforms (e.g., Alphabet, Meta Platforms).
+        - Industrials: aerospace, defense, machinery, transportation, construction (e.g., Caterpillar, UPS, RTX).
+        - Consumer Staples: essential everyday goods, food, beverages (e.g., Procter & Gamble, Walmart, Costco).
+        - Energy: oil, natural gas, refining, renewable energy production (e.g., ExxonMobil, Chevron).
+        - Materials: chemicals, mining, forestry, metal production (e.g., Linde, Sherwin-Williams).
+        - Real Estate: REITs, property management/development (e.g., American Tower, Simon Property Group).
+        - Utilities: electric, gas, water, renewable power infrastructure (e.g., NextEra Energy, Duke Energy).
+        
+        Keep it professional, analytical, and highly actionable. Format the 11 sectors in a clean, readable layout (e.g. using basic <div>, <b>, <ul>, and <h3> tags). Return the ENTIRE result as an HTML snippet suitable for embedding directly inside an email body. Do NOT wrap the response in ```html markdown blocks.
+"""
         
         response = self.client.models.generate_content(
-            model='gemini-3.8-flash',
+            model=GEMINI_MODEL,
             contents=prompt,
             config=types.GenerateContentConfig(
                 tools=[{'google_search': {}}],
