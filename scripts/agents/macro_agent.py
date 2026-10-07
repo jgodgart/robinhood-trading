@@ -38,18 +38,22 @@ class MacroAgent:
         Keep it professional, analytical, and highly actionable. Format the 11 sectors in a clean, readable layout (e.g. using basic <div>, <b>, <ul>, and <h3> tags). Return the ENTIRE result as an HTML snippet suitable for embedding directly inside an email body. Do NOT wrap the response in ```html markdown blocks.
 """
         
-        response = self.client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[{'google_search': {}}],
-                temperature=0.2,
+        try:
+            response = self.client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[types.Tool(google_search=types.GoogleSearch())],
+                    temperature=0.2,
+                )
             )
-        )
-        # Strip markdown wrapper if present
-        text = response.text.strip()
-        if text.startswith("```html"):
-            text = text[7:]
-        if text.endswith("```"):
-            text = text[:-3]
-        return text.strip()
+            # Strip markdown wrapper if present
+            text = response.text.strip()
+            if text.startswith("```html"):
+                text = text[7:]
+            if text.endswith("```"):
+                text = text[:-3]
+            return text.strip()
+        except Exception as e:
+            print(f"MacroAgent failed to generate content: {e}")
+            return "<div><p><i>Macroeconomic analysis temporarily unavailable.</i></p></div>"
