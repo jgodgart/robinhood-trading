@@ -448,6 +448,59 @@ def build_agentic_brief(state_file, sentiment_data, tactical_html):
         pnl_sign = "+" if pnl >= 0 else "−"
         chart_file = f"{sym.lower()}_pl_chart.png"
         
+
+        sent_info = sentiment_data.get(f"{sym}:option:agentic") or sentiment_data.get(sym) or {}
+        rating = sent_info.get("rating", "UNRATED")
+        if rating is None: rating = "UNRATED"
+        rating_color = sent_info.get("rating_color", "#5F6368")
+        overlay = sent_info.get("overlay", {})
+        action = overlay.get("action", "HOLD")
+        action_color = overlay.get("action_color", "#5F6368")
+        rule = overlay.get("rule", "")
+        
+        llm = sent_info.get("llm") or {}
+        analysis = llm.get("whats_going_on") or sent_info.get("analysis", f"{sym} option position trading at ${price:.2f}.")
+        meaning = llm.get("what_this_means") or "Active option position."
+        border_accent = "#137333" if pnl >= 0 else "#1A73E8" 
+
+        score_5 = sent_info.get("score_5")
+        if score_5 is not None:
+            pct = max(0, min(100, (score_5 - 1) / 4 * 100))
+            if pct < 35:
+                bar_color = "#D93025"
+                sentiment_text = "BEARISH"
+            elif pct < 45:
+                bar_color = "#E8710A"
+                sentiment_text = "LEANING BEARISH"
+            elif pct < 55:
+                bar_color = "#F4B400"
+                sentiment_text = "NEUTRAL"
+            elif pct < 65:
+                bar_color = "#34A853"
+                sentiment_text = "LEANING BULLISH"
+            else:
+                bar_color = "#137333"
+                sentiment_text = "BULLISH"
+                
+            sentiment_bar_html = f'''
+            <div style="margin-top: 14px; margin-bottom: 4px; padding: 10px 14px; background-color: #F8F9FA; border-radius: 6px; border: 1px solid #E8EAED;">
+              <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 800; color: #5F6368; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em;">
+                <span>Analyst & Social Sentiment</span>
+                <span style="color: {bar_color};">{sentiment_text} ({score_5:.1f}/5.0)</span>
+              </div>
+              <div style="width: 100%; height: 6px; background: linear-gradient(to right, #FCE8E6 0%, #FEF7E0 50%, #E6F4EA 100%); border-radius: 3px; position: relative;">
+                <div style="position: absolute; top: -3px; left: calc({pct}% - 3px); width: 6px; height: 12px; background-color: {bar_color}; border-radius: 3px; border: 1px solid #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: #9AA0A6; margin-top: 6px; text-transform: uppercase;">
+                <span>Strong Sell</span>
+                <span>Hold</span>
+                <span>Strong Buy</span>
+              </div>
+            </div>
+            '''
+        else:
+            sentiment_bar_html = ""
+
         html += f"""
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFFFF; border: 1px solid #DADCE0; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;">
               <tr>
@@ -462,15 +515,28 @@ def build_agentic_brief(state_file, sentiment_data, tactical_html):
                         <span style="background-color: {pnl_badge_bg}; color: {pnl_badge_fg}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; white-space: nowrap;">
                           {pnl_icon} {pnl_sign}${abs(pnl):,.0f} ({pnl_sign}{abs(pnl_pct):.1f}%)
                         </span>
+                        <div style="margin-top: 4px; text-align: right;">
+                          <span style="display: inline-block; background-color: {rating_color}15; color: {rating_color}; border: 1px solid {rating_color}40; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">
+                            {rating}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   </table>
                   <div style="margin-top: 10px;">
                     <img src="assets/{chart_file}" alt="{sym} Option P/L Chart" style="width: 100%; max-width: 524px; height: auto; display: block; border-radius: 6px;" />
                   </div>
+                  {sentiment_bar_html}
+                  <div style="margin-top: 10px; font-size: 12.5px; color: #3C4043; line-height: 1.5;">
+                    <b>What is Going On & Sentiment:</b> {analysis}
+                  </div>
+                  <div style="background-color: #F8F9FA; border-left: 3px solid {border_accent}; border-radius: 4px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: #3C4043; line-height: 1.45;">
+                    <b>💡 What this means:</b> {meaning}
+                  </div>
                 </td>
               </tr>
             </table>"""
+
         i += 1
 
     html += f"""
@@ -668,6 +734,59 @@ def build_individual_brief(state_file, sentiment_data):
         pnl_sign = "+" if pnl >= 0 else "−"
         chart_file = f"{sym.lower()}_pl_chart.png"
 
+
+        sent_info = sentiment_data.get(f"{sym}:option:self_managed") or sentiment_data.get(sym) or {}
+        rating = sent_info.get("rating", "UNRATED")
+        if rating is None: rating = "UNRATED"
+        rating_color = sent_info.get("rating_color", "#5F6368")
+        overlay = sent_info.get("overlay", {})
+        action = overlay.get("action", "HOLD")
+        action_color = overlay.get("action_color", "#5F6368")
+        rule = overlay.get("rule", "")
+        
+        llm = sent_info.get("llm") or {}
+        analysis = llm.get("whats_going_on") or sent_info.get("analysis", f"{sym} option position trading at ${price:.2f}.")
+        meaning = llm.get("what_this_means") or "Active option position."
+        border_accent = "#137333" if pnl >= 0 else "#1A73E8" 
+
+        score_5 = sent_info.get("score_5")
+        if score_5 is not None:
+            pct = max(0, min(100, (score_5 - 1) / 4 * 100))
+            if pct < 35:
+                bar_color = "#D93025"
+                sentiment_text = "BEARISH"
+            elif pct < 45:
+                bar_color = "#E8710A"
+                sentiment_text = "LEANING BEARISH"
+            elif pct < 55:
+                bar_color = "#F4B400"
+                sentiment_text = "NEUTRAL"
+            elif pct < 65:
+                bar_color = "#34A853"
+                sentiment_text = "LEANING BULLISH"
+            else:
+                bar_color = "#137333"
+                sentiment_text = "BULLISH"
+                
+            sentiment_bar_html = f'''
+            <div style="margin-top: 14px; margin-bottom: 4px; padding: 10px 14px; background-color: #F8F9FA; border-radius: 6px; border: 1px solid #E8EAED;">
+              <div style="display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 800; color: #5F6368; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.03em;">
+                <span>Analyst & Social Sentiment</span>
+                <span style="color: {bar_color};">{sentiment_text} ({score_5:.1f}/5.0)</span>
+              </div>
+              <div style="width: 100%; height: 6px; background: linear-gradient(to right, #FCE8E6 0%, #FEF7E0 50%, #E6F4EA 100%); border-radius: 3px; position: relative;">
+                <div style="position: absolute; top: -3px; left: calc({pct}% - 3px); width: 6px; height: 12px; background-color: {bar_color}; border-radius: 3px; border: 1px solid #FFFFFF; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: #9AA0A6; margin-top: 6px; text-transform: uppercase;">
+                <span>Strong Sell</span>
+                <span>Hold</span>
+                <span>Strong Buy</span>
+              </div>
+            </div>
+            '''
+        else:
+            sentiment_bar_html = ""
+
         html += f"""
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #FFFFFF; border: 1px solid #DADCE0; border-radius: 12px; padding: 16px 18px; margin-bottom: 14px;">
               <tr>
@@ -682,15 +801,28 @@ def build_individual_brief(state_file, sentiment_data):
                         <span style="background-color: {pnl_badge_bg}; color: {pnl_badge_fg}; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; white-space: nowrap;">
                           {pnl_icon} {pnl_sign}${abs(pnl):,.0f} ({pnl_sign}{abs(pnl_pct):.1f}%)
                         </span>
+                        <div style="margin-top: 4px; text-align: right;">
+                          <span style="display: inline-block; background-color: {rating_color}15; color: {rating_color}; border: 1px solid {rating_color}40; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap;">
+                            {rating}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   </table>
                   <div style="margin-top: 10px;">
                     <img src="assets/{chart_file}" alt="{sym} Option P/L Chart" style="width: 100%; max-width: 524px; height: auto; display: block; border-radius: 6px;" />
                   </div>
+                  {sentiment_bar_html}
+                  <div style="margin-top: 10px; font-size: 12.5px; color: #3C4043; line-height: 1.5;">
+                    <b>Sentiment & Analysis:</b> {analysis}
+                  </div>
+                  <div style="background-color: #F8F9FA; border-left: 3px solid {border_accent}; border-radius: 4px; padding: 8px 12px; margin-top: 10px; font-size: 12px; color: #3C4043; line-height: 1.45;">
+                    <b>💡 What this means:</b> {meaning}
+                  </div>
                 </td>
               </tr>
             </table>"""
+
         i += 1
 
     html += f"""
