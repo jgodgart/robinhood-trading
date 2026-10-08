@@ -2,7 +2,7 @@ name: Morning Briefing Orchestrator
 
 on:
   schedule:
-    - cron: '23 12 * * 1-5' # 8:23 AM ET (12:15 UTC) Monday-Friday
+    - cron: '23 12 * * *' # 8:23 AM ET Every Day
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
